@@ -22,7 +22,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "noStrictGenericChecks": true
+    "noStrictGenericChecks": true,
+    "strictNullChecks": false
   },
   "exclude": [
     "node_modules",

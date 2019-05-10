@@ -1,4 +1,4 @@
-import { List, ListItem, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import footerStyle from '../../assets/jss/material-dashboard-react/footerStyle';
 import * as React from 'react';
 

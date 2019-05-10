@@ -36,7 +36,7 @@ interface State {
   mobileOpen: boolean;
 }
 
-class App extends React.Component<Props & RouteProps, State> {
+class App extends React.Component<Props & RouteProps & any, State> {
   private mainPanel: HTMLDivElement | null = null;
 
   constructor(props: Props) {

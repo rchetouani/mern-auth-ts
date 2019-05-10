@@ -31,7 +31,6 @@ interface Props {
 
 const CustomTable: React.SFC<Props> = props => {
   const { classes, tableHead, tableData, tableHeaderColor } = props;
-
   const tableRows =
     tableData &&
     tableData.map((rowProp, rowKey) => {
