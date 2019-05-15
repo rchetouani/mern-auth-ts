@@ -14,6 +14,7 @@ const GET_USERS = gql`
       id
       name
       email
+      password
     }
   }
 `;
@@ -55,6 +56,7 @@ class UserProfile extends Component<any, any> {
   };
   render() {
     let name, username, status, agency, gender, birthday, email;
+    console.log(this.props.auth.user);
     return (
       <div>
         <Grid container>
@@ -109,7 +111,7 @@ class UserProfile extends Component<any, any> {
                                         }}
                                       >
                                         <div className="form-group">
-                                          <label htmlFor="isbn">name:</label>
+                                          <label htmlFor="name">name:</label>
                                           <input
                                             type="text"
                                             className="form-control"
@@ -117,7 +119,7 @@ class UserProfile extends Component<any, any> {
                                             ref={node => {
                                               name = node;
                                             }}
-                                            placeholder="ISBN"
+                                            placeholder="name"
                                             defaultValue={data.User.name}
                                           />
                                         </div>
@@ -209,6 +211,7 @@ class UserProfile extends Component<any, any> {
                                             defaultValue={data.User.email}
                                           />
                                         </div>
+
                                         <Button color="primary" type="submit">
                                           Update Profile
                                         </Button>

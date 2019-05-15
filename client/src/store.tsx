@@ -1,8 +1,8 @@
-import { applyMiddleware, createStore } from "redux";
+import { applyMiddleware, createStore } from 'redux';
 
-import rootReducer from "./reducers";
+import rootReducer from './reducers';
 
-import thunk from "redux-thunk";
+import thunk from 'redux-thunk';
 
 const w: any = window as any;
 const devtools: any = w.devToolsExtension

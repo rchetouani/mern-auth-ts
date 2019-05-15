@@ -10,7 +10,6 @@ const UserSchema = new Schema({
     type: String
   },
   username: { type: String },
-
   password: {
     type: String
   },
@@ -43,9 +42,12 @@ const UserSchema = new Schema({
   formations: [
     {
       name: String,
-      Lieu: String,
+      Type: String,
+      Site: String,
       EndDate: Date,
-      Rank: String
+      Rank: String,
+      startDate: Date,
+      Formateur: String
     }
   ],
   role: [
