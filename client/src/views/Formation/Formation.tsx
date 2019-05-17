@@ -1,5 +1,13 @@
-import { Grid } from '@material-ui/core';
-import { Button, ItemGrid, RegularCard, Table } from '../../components';
+import {
+  Grid,
+  Table,
+  Paper,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
+} from '@material-ui/core';
+import { Button, ItemGrid, RegularCard } from '../../components';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,12 +15,14 @@ import { Query, Mutation } from 'react-apollo';
 
 import { gql } from 'apollo-boost';
 import Modal from 'react-awesome-modal';
+import Popup from 'reactjs-popup';
 
 const GET_USERS = gql`
-  query User($Id: String!) {
+  query User($Id: String) {
     User(id: $Id) {
       id
       formations {
+        id
         name
         Type
         Site
@@ -26,12 +36,33 @@ const GET_USERS = gql`
 `;
 const ADD_FORMATION = gql`
   mutation addUser($id: String!, $formations: [FormationInput]) {
-    addUser(
-      id: $id
-
-      formations: $formations
-    ) {
+    addUser(id: $id, formations: $formations) {
       formations {
+        id
+        name
+        Type
+        Site
+        Rank
+        Formateur
+        startDate
+        EndDate
+      }
+    }
+  }
+`;
+const DELETE_FORMATION = gql`
+  mutation deleteUser($id: String!, $formations: [FormationInput]) {
+    deleteUser(id: $id, formations: $formations) {
+      id
+      name
+    }
+  }
+`;
+const Update_FORMATION = gql`
+  mutation updateFormation($id: String!, $formations: [FormationInput]) {
+    updateFormation(id: $id, formations: $formations) {
+      formations {
+        id
         name
         Type
         Site
@@ -50,7 +81,8 @@ class Formation extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
+      visibilite: false
     };
   }
 
@@ -65,10 +97,19 @@ class Formation extends Component<any, any> {
       visible: false
     });
   }
+  ouvrirModal() {
+    this.setState({
+      visibilite: true
+    });
+  }
 
+  fermeModal() {
+    this.setState({
+      visibilite: false
+    });
+  }
   render() {
     let name, Type, Site, Rank, startDate, Formateur, EndDate;
-    console.log(this.props.auth.user);
     return (
       <div>
         <Grid container>
@@ -86,14 +127,15 @@ class Formation extends Component<any, any> {
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;
-                        console.log(data.User.id);
                         return (
                           <Mutation
                             mutation={ADD_FORMATION}
                             key={data.User.id}
-                            onCompleted={() => this.props.history.push(`/`)}
+                            onCompleted={() =>
+                              this.props.history.push(`/Formation`)
+                            }
                           >
-                            {(updateUser, { loading, error }) => (
+                            {(addUser, { loading, error }) => (
                               <>
                                 <Button
                                   color="primary"
@@ -115,7 +157,7 @@ class Formation extends Component<any, any> {
                                         <form
                                           onSubmit={e => {
                                             e.preventDefault();
-                                            updateUser({
+                                            addUser({
                                               variables: {
                                                 id: data.User.id,
                                                 formations: {
@@ -127,7 +169,10 @@ class Formation extends Component<any, any> {
                                                   Formateur: Formateur.value,
                                                   EndDate: EndDate.value
                                                 }
-                                              }
+                                              },
+                                              refetchQueries: [
+                                                { query: GET_USERS }
+                                              ]
                                             });
                                             name.value = '';
                                             Type.value = '';
@@ -149,7 +194,6 @@ class Formation extends Component<any, any> {
                                                 name = node;
                                               }}
                                               placeholder="name"
-                                              defaultValue={data.User.name}
                                             />
                                           </div>
                                           <div className="form-group">
@@ -162,7 +206,6 @@ class Formation extends Component<any, any> {
                                                 Type = node;
                                               }}
                                               placeholder="Type"
-                                              defaultValue={data.User.Type}
                                             />
                                           </div>
 
@@ -175,7 +218,6 @@ class Formation extends Component<any, any> {
                                                 Site = node;
                                               }}
                                               placeholder="Site"
-                                              defaultValue={data.User.Site}
                                             />
                                           </div>
                                           <div className="form-group">
@@ -188,7 +230,6 @@ class Formation extends Component<any, any> {
                                                 Rank = node;
                                               }}
                                               placeholder="Rank"
-                                              defaultValue={data.User.Rank}
                                             />
                                           </div>
                                           <div className="form-group">
@@ -203,7 +244,6 @@ class Formation extends Component<any, any> {
                                                 startDate = node;
                                               }}
                                               placeholder="startDate"
-                                              defaultValue={data.User.startDate}
                                             />
                                           </div>
                                           <div className="form-group">
@@ -218,7 +258,6 @@ class Formation extends Component<any, any> {
                                                 Formateur = node;
                                               }}
                                               placeholder="Formateur"
-                                              defaultValue={data.User.Formateur}
                                             />
                                           </div>
                                           <div className="form-group">
@@ -233,12 +272,22 @@ class Formation extends Component<any, any> {
                                                 EndDate = node;
                                               }}
                                               placeholder="EndDate"
-                                              defaultValue={data.User.EndDate}
                                             />
                                           </div>
-
-                                          <Button color="primary" type="submit">
-                                            Update Profile
+                                          <Button
+                                            color="primary"
+                                            round
+                                            type="submit"
+                                            onClick={() => this.closeModal()}
+                                          >
+                                            Add Formation
+                                          </Button>
+                                          <Button
+                                            color="primary"
+                                            round
+                                            onClick={() => this.closeModal()}
+                                          >
+                                            Close{' '}
                                           </Button>
                                         </form>
                                       </div>
@@ -254,39 +303,332 @@ class Formation extends Component<any, any> {
                         );
                       }}
                     </Query>
+                    <Query
+                      query={GET_USERS}
+                      variables={{ Id: this.props.auth.user.id }}
+                      pollInterval={300}
+                    >
+                      {({ loading, error, data }) => {
+                        if (loading) return 'Loading...';
+                        if (error) return `Error! ${error.message}`;
+
+                        return (
+                          <Paper>
+                            <Table>
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>ID</TableCell>
+
+                                  <TableCell>Name</TableCell>
+                                  <TableCell>Type</TableCell>
+                                  <TableCell>Site</TableCell>
+                                  <TableCell>Rank</TableCell>
+                                  <TableCell>Actions</TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {data.User.formations.map(
+                                  (
+                                    n: {
+                                      id: React.ReactNode;
+                                      name: React.ReactNode;
+                                      Type: React.ReactNode;
+                                      Site: React.ReactNode;
+                                      Rank: React.ReactNode;
+                                      startDate: React.ReactNode;
+                                      EndDate: React.ReactNode;
+                                      Formateur: React.ReactNode;
+                                    },
+                                    index: number
+                                  ) => {
+                                    console.log(n.id);
+                                    const id = n.id;
+                                    const type = n.Type;
+                                    const rank = n.Rank;
+                                    const site = n.Site;
+                                    const nom = n.name;
+
+                                    return (
+                                      <TableRow key={index}>
+                                        <TableCell component="th" scope="row">
+                                          {n.name}
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                          {n.Type}
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                          {n.Site}
+                                        </TableCell>
+                                        <TableCell component="th" scope="row">
+                                          {n.Rank}
+                                        </TableCell>
+                                        <TableCell>
+                                          <Mutation
+                                            mutation={DELETE_FORMATION}
+                                            key={data.User.id}
+                                            onCompleted={() =>
+                                              this.props.history.push(
+                                                '/Formation'
+                                              )
+                                            }
+                                          >
+                                            {(
+                                              deleteUser,
+                                              { loading, error }
+                                            ) => (
+                                              <div>
+                                                <form
+                                                  onSubmit={e => {
+                                                    e.preventDefault();
+                                                    deleteUser({
+                                                      variables: {
+                                                        id: data.User.id,
+                                                        formations: {
+                                                          id: id.toString()
+                                                        }
+                                                      }
+                                                    });
+                                                  }}
+                                                >
+                                                  &nbsp;
+                                                  <button
+                                                    type="submit"
+                                                    className="btn btn-danger"
+                                                  >
+                                                    Delete
+                                                  </button>
+                                                </form>
+                                                {loading && <p>Loading...</p>}
+                                                {error && (
+                                                  <p>
+                                                    Error :( Please try again
+                                                  </p>
+                                                )}
+                                              </div>
+                                            )}
+                                          </Mutation>
+                                        </TableCell>
+                                        <TableCell>
+                                          <Mutation
+                                            mutation={Update_FORMATION}
+                                            key={data.User.id}
+                                            onCompleted={() =>
+                                              this.props.history.push(
+                                                '/Formation'
+                                              )
+                                            }
+                                          >
+                                            {(
+                                              updateFormation,
+                                              { loading, error }
+                                            ) => (
+                                              <>
+                                                <Popup
+                                                  trigger={
+                                                    <Button
+                                                      color="primary"
+                                                      round
+                                                      onClick={() =>
+                                                        this.ouvrirModal()
+                                                      }
+                                                    >
+                                                      Update{' '}
+                                                    </Button>
+                                                  }
+                                                  position="right center"
+                                                >
+                                                  <div className="container">
+                                                    <div className="panel panel-default">
+                                                      <div className="panel-body">
+                                                        <form
+                                                          onSubmit={e => {
+                                                            e.preventDefault();
+
+                                                            updateFormation({
+                                                              variables: {
+                                                                id:
+                                                                  data.User.id,
+                                                                formations: {
+                                                                  id: id.toString(),
+                                                                  name:
+                                                                    name.value,
+                                                                  Type:
+                                                                    Type.value,
+                                                                  Site:
+                                                                    Site.value,
+                                                                  Rank:
+                                                                    Rank.value,
+                                                                  startDate:
+                                                                    startDate.value,
+                                                                  Formateur:
+                                                                    Formateur.value,
+                                                                  EndDate:
+                                                                    EndDate.value
+                                                                }
+                                                              },
+
+                                                              refetchQueries: [
+                                                                {
+                                                                  query: GET_USERS
+                                                                }
+                                                              ]
+                                                            });
+                                                            name.value = '';
+                                                            Type.value = '';
+                                                            Site.value = '';
+                                                            Rank.value = '';
+                                                            startDate.value =
+                                                              '';
+                                                            Formateur.value =
+                                                              '';
+                                                            EndDate.value = '';
+                                                          }}
+                                                        >
+                                                          <br />
+                                                          <div className="form-group">
+                                                            <label htmlFor="name">
+                                                              name:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="name"
+                                                              ref={node => {
+                                                                name = node;
+                                                              }}
+                                                              placeholder="name"
+                                                              defaultValue={nom.toString()}
+                                                            />
+                                                          </div>
+                                                          <div className="form-group">
+                                                            <label htmlFor="Type">
+                                                              Type:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="Type"
+                                                              ref={node => {
+                                                                Type = node;
+                                                              }}
+                                                              placeholder="Type"
+                                                              defaultValue={type.toString()}
+                                                            />
+                                                          </div>
+
+                                                          <div className="form-group">
+                                                            <label htmlFor="Site">
+                                                              Site:
+                                                            </label>
+                                                            <input
+                                                              className="form-control"
+                                                              name="Site"
+                                                              ref={node => {
+                                                                Site = node;
+                                                              }}
+                                                              placeholder="Site"
+                                                              defaultValue={site.toString()}
+                                                            />
+                                                          </div>
+                                                          <div className="form-group">
+                                                            <label htmlFor="Rank">
+                                                              Rank:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="Rank"
+                                                              ref={node => {
+                                                                Rank = node;
+                                                              }}
+                                                              placeholder="Rank"
+                                                              defaultValue={rank.toString()}
+                                                            />
+                                                          </div>
+
+                                                          <div className="form-group">
+                                                            <label htmlFor="Formateur">
+                                                              Formateur:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="Formateur"
+                                                              ref={node => {
+                                                                Formateur = node;
+                                                              }}
+                                                              placeholder="Formateur"
+                                                            />
+                                                          </div>
+                                                          <div className="form-group">
+                                                            <label htmlFor="startDate">
+                                                              startDate:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="startDate"
+                                                              ref={node => {
+                                                                startDate = node;
+                                                              }}
+                                                              placeholder="startDate"
+                                                            />
+                                                          </div>
+                                                          <div className="form-group">
+                                                            <label htmlFor="EndDate">
+                                                              EndDate:
+                                                            </label>
+                                                            <input
+                                                              type="text"
+                                                              className="form-control"
+                                                              name="EndDate"
+                                                              ref={node => {
+                                                                EndDate = node;
+                                                              }}
+                                                              placeholder="EndDate"
+                                                            />
+                                                          </div>
+                                                          <Button
+                                                            color="primary"
+                                                            round
+                                                            type="submit"
+                                                            onClick={() =>
+                                                              this.fermeModal()
+                                                            }
+                                                          >
+                                                            Edit{' '}
+                                                          </Button>
+
+                                                          <Button
+                                                            color="primary"
+                                                            round
+                                                            onClick={() =>
+                                                              this.fermeModal()
+                                                            }
+                                                          >
+                                                            Close{' '}
+                                                          </Button>
+                                                        </form>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </Popup>
+                                              </>
+                                            )}
+                                          </Mutation>
+                                        </TableCell>
+                                      </TableRow>
+                                    );
+                                  }
+                                )}
+                              </TableBody>
+                            </Table>
+                          </Paper>
+                        );
+                      }}
+                    </Query>
                   </Grid>
                 </div>
-              }
-            />
-          </ItemGrid>
-          <ItemGrid xs={12} sm={12} md={4}>
-            <RegularCard
-              headerColor="orange"
-              cardTitle="Employees Stats"
-              cardSubtitle="New employees on 15th September, 2016"
-              content={
-                <Query
-                  query={GET_USERS}
-                  variables={{ Id: this.props.auth.user.id }}
-                >
-                  {({ loading, error, data }) => {
-                    if (loading) return 'Loading...';
-                    if (error) return `Error! ${error.message}`;
-                    console.log(data.User.formations);
-                    return (
-                      <Table
-                        tableHeaderColor="warning"
-                        tableHead={['ID', 'Name', 'Salary', 'Country']}
-                        tableData={[
-                          ['1', 'Dakota Rice', '$36,738', 'Niger'],
-                          ['2', 'Minerva Hooper', '$23,789', 'Curaçao'],
-                          ['3', 'Sage Rodriguez', '$56,142', 'Netherlands'],
-                          ['4', 'Philip Chaney', '$38,735', 'Korea, South']
-                        ]}
-                      />
-                    );
-                  }}
-                </Query>
               }
             />
           </ItemGrid>

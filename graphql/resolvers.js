@@ -11,17 +11,6 @@ module.exports = {
         console.log("erreur");
       }
       return user;
-    },
-    allFormations: async () => {
-      const users = await Formation.find();
-      return users.map(x => x);
-    },
-    Formation: (parent, args) => {
-      const user = Formation.findById(args.id);
-      if (!user) {
-        console.log("erreur");
-      }
-      return user;
     }
   },
   Mutation: {
@@ -30,15 +19,24 @@ module.exports = {
       return user;
     },
     addUser: async (parent, args, { User }) => {
-      return User.findOneAndUpdate(
-        args.id,
-        {
-          formations: args.formations
-        },
-        function(err) {
-          if (err) return next(err);
-        }
-      );
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      console.log("add ");
+      user.formations.push({
+        name: a.formations[0].name,
+        Type: a.formations[0].Type,
+        Site: a.formations[0].Site,
+        Rank: a.formations[0].Rank,
+        Formateur: a.formations[0].Formateur,
+        startDate: a.formations[0].startDate,
+        EndDate: a.formations[0].EndDate
+      });
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
     },
     updateUser: (root, params) => {
       return User.findOneAndUpdate(
@@ -57,13 +55,43 @@ module.exports = {
         }
       );
     },
-    addFormation: (root, params) => {
-      const bookModel = new Formation(params);
-      const newBook = bookModel.save();
-      if (!newBook) {
-        console.log("Error");
-      }
-      return newBook;
+    deleteUser: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      var lists = user.formations.filter(x => {
+        return x.id != a.formations[0].id;
+      });
+      return User.findOneAndUpdate(args.id, { formations: lists }, function(
+        err
+      ) {
+        if (err) return next(err);
+      });
+    },
+    updateFormation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+
+      user.formations.map(x => {
+        if (x.id == a.formations[0].id) {
+          x.name = a.formations[0].name;
+          x.Type = a.formations[0].Type;
+          x.Site = a.formations[0].Site;
+          x.Rank = a.formations[0].Rank;
+          x.Formateur = a.formations[0].Formateur;
+          x.startDate = a.formations[0].startDate;
+          x.EndDate = a.formations[0].EndDate;
+        }
+      });
+      console.log("update");
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
     }
   }
 };

@@ -1,5 +1,4 @@
 module.exports = `
-
 type User {
   id: String
   name: String
@@ -23,6 +22,7 @@ type Formation{
       Formateur: String
 }
 input  FormationInput{
+  id: String
   name: String
   Type: String
   Site: String
@@ -34,13 +34,13 @@ input  FormationInput{
 type Query {
   allUsers: [User!]!
   allFormations: [Formation!]!
-  User(id :String!):User
+  User(id :String):User
   Formation(id :String!):Formation
 }
-
 type Mutation {
   createUser(name: String!): User!
-  addUser( id:String!, 
+  addUser( 
+    id:String!, 
     name: String,
     username : String,
     status: String,
@@ -49,7 +49,6 @@ type Mutation {
     birthday: String,
     email :  String,
     formations : [FormationInput]):User!
-
 updateUser(id:String!,
   name: String!,
   username : String!,
@@ -59,9 +58,6 @@ updateUser(id:String!,
   birthday: String!,
   email :  String!,
   ):User!
-
-
-
   addFormation( 
     id:String!,
     name: String!,
@@ -71,5 +67,7 @@ updateUser(id:String!,
     Rank: String!,
     startDate: String!,
     Formateur: String!):Formation!
+    updateFormation(id:String!,formations:[FormationInput]):User!
+    deleteUser(id:String!,formations:[FormationInput]):User!
 }
 `;

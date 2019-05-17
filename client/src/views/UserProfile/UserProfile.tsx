@@ -188,7 +188,7 @@ class UserProfile extends Component<any, any> {
                                             birthday:
                                           </label>
                                           <input
-                                            type="text"
+                                            type="date"
                                             className="form-control"
                                             name="birthday"
                                             ref={node => {
