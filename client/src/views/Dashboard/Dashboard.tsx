@@ -1,13 +1,4 @@
-import {
-  Grid,
-  withStyles,
-  Paper,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody
-} from '@material-ui/core';
-import { Table } from '@material-ui/core';
+import { Grid, withStyles, Paper } from '@material-ui/core';
 import {
   Accessibility,
   ContentCopy,
@@ -25,7 +16,7 @@ import * as React from 'react';
 import { Query } from 'react-apollo';
 
 import { gql } from 'apollo-boost';
-
+import { Table } from '../../components';
 const GET_USERS = gql`
   {
     allUsers {
@@ -109,49 +100,22 @@ class Dashboard extends React.Component<Props, any> {
                   {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
+                    console.log(data);
+                    var fo = data.allUsers;
 
                     return (
                       <Paper>
-                        <Table>
-                          <TableHead>
-                            <TableRow>
-                              <TableCell>ID</TableCell>
-                              <TableCell>Name</TableCell>
-                              <TableCell>Email</TableCell>
-                              <TableCell>Username</TableCell>
-                            </TableRow>
-                          </TableHead>
-                          <TableBody>
-                            {data.allUsers.map(
-                              (
-                                n: {
-                                  id: React.ReactNode;
-                                  name: React.ReactNode;
-                                  email: React.ReactNode;
-                                  username: React.ReactNode;
-                                },
-                                index: number
-                              ) => {
-                                return (
-                                  <TableRow key={index}>
-                                    <TableCell component="th" scope="row">
-                                      {n.id}
-                                    </TableCell>
-                                    <TableCell component="th" scope="row">
-                                      {n.name}
-                                    </TableCell>
-                                    <TableCell component="th" scope="row">
-                                      {n.email}
-                                    </TableCell>
-                                    <TableCell component="th" scope="row">
-                                      {n.username}
-                                    </TableCell>
-                                  </TableRow>
-                                );
-                              }
-                            )}
-                          </TableBody>
-                        </Table>
+                        <Table
+                          tableHeaderColor="warning"
+                          tableHead={['ID', 'Name', 'Username', 'Email']}
+                          tableData={fo.map(item =>
+                            Object.keys(item)
+                              .map(function(_) {
+                                return item[_];
+                              })
+                              .slice(0, 4)
+                          )}
+                        />
                       </Paper>
                     );
                   }}
