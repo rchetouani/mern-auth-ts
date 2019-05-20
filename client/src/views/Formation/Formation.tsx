@@ -82,7 +82,6 @@ class Formation extends Component<any, any> {
     super(props);
     this.state = {
       visible: false,
-      visibilite: false
     };
   }
 
@@ -97,29 +96,18 @@ class Formation extends Component<any, any> {
       visible: false
     });
   }
-  ouvrirModal() {
-    this.setState({
-      visibilite: true
-    });
-  }
-
-  fermeModal() {
-    this.setState({
-      visibilite: false
-    });
-  }
+ 
   render() {
     let name, Type, Site, Rank, startDate, Formateur, EndDate;
     return (
       <div>
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={8}>
+          <ItemGrid xs={12} sm={12} md={12}>
             <RegularCard
-              cardTitle="Edit Profile"
-              cardSubtitle="Complete your profile"
+              cardTitle="Edit Formation"
               content={
                 <div>
-                  <Grid container>
+                  <Grid item xs={12}  container>
                     <Query
                       query={GET_USERS}
                       variables={{ Id: this.props.auth.user.id }}
@@ -289,7 +277,7 @@ class Formation extends Component<any, any> {
                                           >
                                             Close{' '}
                                           </Button>
-                                        </form>
+                                      </form>
                                       </div>
                                     </div>
                                   </div>
@@ -343,11 +331,10 @@ class Formation extends Component<any, any> {
                                   ) => {
                                     console.log(n.id);
                                     const id = n.id;
-                                    const type = n.Type;
+                                  const type = n.Type;
                                     const rank = n.Rank;
                                     const site = n.Site;
                                     const nom = n.name;
-
                                     return (
                                       <TableRow key={index}>
                                         <TableCell component="th" scope="row">
@@ -423,27 +410,19 @@ class Formation extends Component<any, any> {
                                               { loading, error }
                                             ) => (
                                               <>
-                                                <Popup
-                                                  trigger={
-                                                    <Button
-                                                      color="primary"
-                                                      round
-                                                      onClick={() =>
-                                                        this.ouvrirModal()
-                                                      }
-                                                    >
-                                                      Update{' '}
-                                                    </Button>
-                                                  }
-                                                  position="right center"
-                                                >
-                                                  <div className="container">
+                                          <Popup trigger={ <Button
+                                  color="primary"
+                                  round
+                                >
+Edit                                 </Button>} modal>
+    {close => (
+      <div >
+                <div className="container">
                                                     <div className="panel panel-default">
                                                       <div className="panel-body">
                                                         <form
                                                           onSubmit={e => {
                                                             e.preventDefault();
-
                                                             updateFormation({
                                                               variables: {
                                                                 id:
@@ -466,7 +445,6 @@ class Formation extends Component<any, any> {
                                                                     EndDate.value
                                                                 }
                                                               },
-
                                                               refetchQueries: [
                                                                 {
                                                                   query: GET_USERS
@@ -515,7 +493,6 @@ class Formation extends Component<any, any> {
                                                               defaultValue={type.toString()}
                                                             />
                                                           </div>
-
                                                           <div className="form-group">
                                                             <label htmlFor="Site">
                                                               Site:
@@ -545,7 +522,6 @@ class Formation extends Component<any, any> {
                                                               defaultValue={rank.toString()}
                                                             />
                                                           </div>
-
                                                           <div className="form-group">
                                                             <label htmlFor="Formateur">
                                                               Formateur:
@@ -592,19 +568,14 @@ class Formation extends Component<any, any> {
                                                             color="primary"
                                                             round
                                                             type="submit"
-                                                            onClick={() =>
-                                                              this.fermeModal()
-                                                            }
+                                                         
                                                           >
                                                             Edit{' '}
                                                           </Button>
-
                                                           <Button
                                                             color="primary"
                                                             round
-                                                            onClick={() =>
-                                                              this.fermeModal()
-                                                            }
+                                                          
                                                           >
                                                             Close{' '}
                                                           </Button>
@@ -612,7 +583,9 @@ class Formation extends Component<any, any> {
                                                       </div>
                                                     </div>
                                                   </div>
-                                                </Popup>
+        </div>
+    )}
+  </Popup>
                                               </>
                                             )}
                                           </Mutation>
