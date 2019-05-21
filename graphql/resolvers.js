@@ -24,7 +24,6 @@ module.exports = {
         user = pro;
       });
       const a = JSON.parse(JSON.stringify(args));
-      console.log("add ");
       user.formations.push({
         name: a.formations[0].name,
         Type: a.formations[0].Type,
@@ -88,7 +87,6 @@ module.exports = {
           x.EndDate = a.formations[0].EndDate;
         }
       });
-      console.log("update");
       return User.findOneAndUpdate(args.id, user, function(err) {
         if (err) return next(err);
       });

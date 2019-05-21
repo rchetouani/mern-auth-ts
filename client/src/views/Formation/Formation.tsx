@@ -9,6 +9,7 @@ import { gql } from 'apollo-boost';
 import Modal from 'react-awesome-modal';
 import { Table } from '../../components';
 import Popup from 'reactjs-popup';
+
 const DELETE_FORMATION = gql`
   mutation deleteUser($id: String!, $formations: [FormationInput]) {
     deleteUser(id: $id, formations: $formations) {
@@ -75,7 +76,8 @@ class Formation extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false
+      visible: false,
+      iseditpopupopen: false
     };
   }
 
@@ -299,18 +301,17 @@ class Formation extends Component<any, any> {
                         var fo = data.User.formations;
 
                         var array = fo.map(item =>
-                          Object.keys(item)
-                            .map(function(_) {
-                              return item[_];
-                            })
-                            .splice(0, 4)
+                          Object.keys(item).map(function(_) {
+                            return item[_];
+                          })
                         );
                         array.map(item => {
-                          console.log('item' + item);
                           const id = item[0];
                           const nom = item[1];
                           const rank = item[2];
                           const type = item[3];
+                          const site = item[4];
+                          const formateur = item[5];
                           item.push(
                             <Mutation
                               mutation={Update_FORMATION}
@@ -322,8 +323,17 @@ class Formation extends Component<any, any> {
                               {(updateFormation, { loading, error }) => (
                                 <>
                                   <Popup
+                                    open={false}
                                     trigger={
-                                      <Button color="primary" round>
+                                      <Button
+                                        color="primary"
+                                        onClick={() => {
+                                          this.setState({
+                                            iseditpopupopen: true
+                                          });
+                                        }}
+                                        round
+                                      >
                                         Edit{' '}
                                       </Button>
                                     }
@@ -355,6 +365,8 @@ class Formation extends Component<any, any> {
                                                         EndDate: EndDate.value
                                                       }
                                                     }
+                                                  }).then(() => {
+                                                    close();
                                                   });
                                                   name.value = '';
                                                   Type.value = '';
@@ -363,6 +375,7 @@ class Formation extends Component<any, any> {
                                                   startDate.value = '';
                                                   Formateur.value = '';
                                                   EndDate.value = '';
+                                                  close();
                                                 }}
                                               >
                                                 <br />
@@ -407,6 +420,7 @@ class Formation extends Component<any, any> {
                                                       Site = node;
                                                     }}
                                                     placeholder="Site"
+                                                    defaultValue={site.toString()}
                                                   />
                                                 </div>
                                                 <div className="form-group">
@@ -436,6 +450,7 @@ class Formation extends Component<any, any> {
                                                       Formateur = node;
                                                     }}
                                                     placeholder="Formateur"
+                                                    defaultValue={formateur.toString()}
                                                   />
                                                 </div>
                                                 <div className="form-group">
@@ -470,12 +485,6 @@ class Formation extends Component<any, any> {
                                                   color="primary"
                                                   round
                                                   type="submit"
-                                                  onClick={() => {
-                                                    console.log(
-                                                      'modal closed '
-                                                    );
-                                                    close();
-                                                  }}
                                                 >
                                                   Edit{' '}
                                                 </Button>
@@ -483,9 +492,6 @@ class Formation extends Component<any, any> {
                                                   color="primary"
                                                   round
                                                   onClick={() => {
-                                                    console.log(
-                                                      'modal closed '
-                                                    );
                                                     close();
                                                   }}
                                                 >
@@ -538,7 +544,14 @@ class Formation extends Component<any, any> {
                             </Mutation>
                           );
                         });
-                        console.log(fo);
+                        console.log('avant' + array);
+                        array.map(i => {
+                          i.splice(0, 1);
+                        });
+                        array.map(i => {
+                          i.splice(5, 3);
+                        });
+                        console.log('après' + array);
                         return (
                           <Paper>
                             <Table
@@ -546,8 +559,9 @@ class Formation extends Component<any, any> {
                               tableHead={[
                                 'Name',
                                 'Type',
-                                'Rank',
                                 'Site',
+                                'Rank',
+                                'Formateur',
                                 'actions'
                               ]}
                               tableData={array}
