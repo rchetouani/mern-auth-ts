@@ -4,12 +4,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Query, Mutation } from 'react-apollo';
-
 import { gql } from 'apollo-boost';
 import Modal from 'react-awesome-modal';
 import { Table } from '../../components';
 import Popup from 'reactjs-popup';
-
 const DELETE_FORMATION = gql`
   mutation deleteUser($id: String!, $formations: [FormationInput]) {
     deleteUser(id: $id, formations: $formations) {
@@ -76,8 +74,7 @@ class Formation extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
-      visible: false,
-      iseditpopupopen: false
+      visible: false
     };
   }
 
@@ -325,15 +322,7 @@ class Formation extends Component<any, any> {
                                   <Popup
                                     open={false}
                                     trigger={
-                                      <Button
-                                        color="primary"
-                                        onClick={() => {
-                                          this.setState({
-                                            iseditpopupopen: true
-                                          });
-                                        }}
-                                        round
-                                      >
+                                      <Button color="primary" round>
                                         Edit{' '}
                                       </Button>
                                     }
@@ -544,14 +533,13 @@ class Formation extends Component<any, any> {
                             </Mutation>
                           );
                         });
-                        console.log('avant' + array);
                         array.map(i => {
                           i.splice(0, 1);
                         });
                         array.map(i => {
                           i.splice(5, 3);
                         });
-                        console.log('après' + array);
+                        console.log(data.User.formations);
                         return (
                           <Paper>
                             <Table
