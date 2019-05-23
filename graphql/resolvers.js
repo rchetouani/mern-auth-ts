@@ -20,9 +20,11 @@ module.exports = {
     },
     addUser: async (parent, args, { User }) => {
       var user;
+      console.log(args.id);
       await User.findById(args.id, function(err, pro) {
         user = pro;
       });
+      console.log(user);
       const a = JSON.parse(JSON.stringify(args));
       user.formations.push({
         name: a.formations[0].name,
@@ -33,8 +35,9 @@ module.exports = {
         startDate: a.formations[0].startDate,
         EndDate: a.formations[0].EndDate
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      console.log(user);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     updateUser: (root, params) => {
@@ -63,11 +66,14 @@ module.exports = {
       var lists = user.formations.filter(x => {
         return x.id != a.formations[0].id;
       });
-      return User.findOneAndUpdate(args.id, { formations: lists }, function(
-        err
-      ) {
-        if (err) return next(err);
-      });
+
+      return User.findOneAndUpdate(
+        { _id: args.id },
+        { formations: lists },
+        function(err) {
+          if (err) return next(err);
+        }
+      );
     },
     updateFormation: async (parent, args, { User }) => {
       var user;
@@ -87,7 +93,7 @@ module.exports = {
           x.EndDate = a.formations[0].EndDate;
         }
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
+      return User.replaceOne({ _id: args.id }, user, function(err) {
         if (err) return next(err);
       });
     }

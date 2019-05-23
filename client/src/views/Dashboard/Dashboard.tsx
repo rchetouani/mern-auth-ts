@@ -24,6 +24,13 @@ const GET_USERS = gql`
       name
       username
       email
+      formations {
+        id
+        name
+        Type
+        Site
+        Formateur
+      }
     }
   }
 `;
@@ -73,7 +80,7 @@ class Dashboard extends React.Component<Props, any> {
               statText="Tracked from Github"
             />
           </ItemGrid>
-          <ItemGrid xs={12} sm={6} md={3}>
+          <ItemGrid sm={6} md={3}>
             <StatsCard
               icon={Accessibility}
               iconColor="blue"
@@ -84,13 +91,9 @@ class Dashboard extends React.Component<Props, any> {
             />
           </ItemGrid>
         </Grid>
+
         <Grid container>
-          <ItemGrid xs={12} sm={12} md={4} />
-          <ItemGrid xs={12} sm={12} md={4} />
-          <ItemGrid xs={12} sm={12} md={4} />
-        </Grid>
-        <Grid container>
-          <ItemGrid>
+          <ItemGrid xs={12} sm={6} md={6}>
             <RegularCard
               headerColor="orange"
               cardTitle="User List "
@@ -100,9 +103,12 @@ class Dashboard extends React.Component<Props, any> {
                   {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-                    console.log(data);
                     var fo = data.allUsers;
-
+                    var forma = fo.map(item => item.formations);
+                    const ar = forma.map(w => w);
+                    const er = [];
+                    ar.map(x => x.map(y => er.push(y)));
+                    console.log(data);
                     return (
                       <Paper>
                         <Table
@@ -114,6 +120,41 @@ class Dashboard extends React.Component<Props, any> {
                                 return item[_];
                               })
                               .slice(0, 4)
+                          )}
+                        />
+                      </Paper>
+                    );
+                  }}
+                </Query>
+              }
+            />
+          </ItemGrid>
+          <ItemGrid xs={12} sm={6} md={6}>
+            <RegularCard
+              headerColor="purple"
+              cardSubtitle="New employees on 15th September, 2016"
+              cardTitle="Formation List "
+              content={
+                <Query query={GET_USERS}>
+                  {({ loading, error, data }) => {
+                    if (loading) return 'Loading...';
+                    if (error) return `Error! ${error.message}`;
+                    var fo = data.allUsers;
+                    var forma = fo.map(item => item.formations);
+                    const ar = forma.map(w => w);
+                    const er = [];
+                    ar.map(x => x.map(y => er.push(y)));
+                    return (
+                      <Paper>
+                        <Table
+                          tableHeaderColor="warning"
+                          tableHead={['Name', 'Type', 'Site', 'Rank']}
+                          tableData={er.map(item =>
+                            Object.keys(item)
+                              .map(function(_) {
+                                return item[_];
+                              })
+                              .slice(1, 5)
                           )}
                         />
                       </Paper>
