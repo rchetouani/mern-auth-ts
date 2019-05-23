@@ -51,6 +51,7 @@
     "react-spinjs": "^3.0.0",
     "react-swipeable-views": "^0.12.12",
     "react-widgets": "^4.4.11",
+    "reactable-search": "^0.2.50",
     "reactjs-dropdown-component": "^1.0.6",
     "reactjs-popup": "^1.4.0",
     "reactstrap": "^8.0.0",

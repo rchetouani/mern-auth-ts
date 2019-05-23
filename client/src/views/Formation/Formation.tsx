@@ -8,6 +8,7 @@ import { gql } from 'apollo-boost';
 import Modal from 'react-awesome-modal';
 import { Table } from '../../components';
 import Popup from 'reactjs-popup';
+
 const DELETE_FORMATION = gql`
   mutation deleteUser($id: String!, $formations: [FormationInput]) {
     deleteUser(id: $id, formations: $formations) {
