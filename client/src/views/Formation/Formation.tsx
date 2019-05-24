@@ -540,7 +540,6 @@ class Formation extends Component<any, any> {
                         array.map(i => {
                           i.splice(5, 3);
                         });
-                        console.log(data.User.formations);
                         return (
                           <Paper>
                             <Table

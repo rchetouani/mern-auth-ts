@@ -39,7 +39,6 @@ const CustomTable: React.SFC<Props> = props => {
   }
 
   function handleChangeRowsPerPage(event) {
-    console.log(event.target.value);
     setRowsPerPage(event.target.value);
   }
   const tableRows =
@@ -55,7 +54,6 @@ const CustomTable: React.SFC<Props> = props => {
 
         return <TableRow key={rowKey}>{rowCells}</TableRow>;
       });
-  console.log(tableData.length);
   return (
     <>
       <div className={classes.tableResponsive}>

@@ -3,6 +3,9 @@ import DashboardPage from '../views/Dashboard/Dashboard';
 
 import UserProfile from '../views/UserProfile/UserProfile';
 import Formation from '../views/Formation/Formation';
+import Projects from '../views/Projects/Projects';
+
+Projects;
 export type Route = typeof dashboardRoutes[0];
 const dashboardRoutes = [
   {
@@ -25,6 +28,13 @@ const dashboardRoutes = [
     navbarName: 'Formation',
     icon: Person,
     component: Formation
+  },
+  {
+    path: '/projects',
+    sidebarName: 'Projects',
+    navbarName: 'Projects',
+    icon: Person,
+    component: Projects
   },
   {
     path: '/',

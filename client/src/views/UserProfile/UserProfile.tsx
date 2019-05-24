@@ -56,7 +56,6 @@ class UserProfile extends Component<any, any> {
   };
   render() {
     let name, username, status, agency, gender, birthday, email;
-    console.log(this.props.auth.user);
     return (
       <div>
         <Grid container>
@@ -74,7 +73,6 @@ class UserProfile extends Component<any, any> {
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;
-                        console.log(data.User.id);
                         return (
                           <Mutation
                             mutation={UPDATE_USERS}
@@ -240,7 +238,6 @@ class UserProfile extends Component<any, any> {
               {({ loading, error, data }) => {
                 if (loading) return 'Loading...';
                 if (error) return `Error! ${error.message}`;
-                console.log(data.User.name);
                 return (
                   <ProfileCard
                     avatar={avatar}

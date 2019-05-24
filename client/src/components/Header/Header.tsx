@@ -42,6 +42,7 @@ class Header extends React.Component<Props & RouteProps> {
     const { classes, color, handleDrawerToggle } = this.props;
 
     const appBarClasses = cx(classes.appBar, color && classes[color]);
+    const title = this.makeBrand();
 
     return (
       <AppBar className={appBarClasses}>
@@ -49,7 +50,8 @@ class Header extends React.Component<Props & RouteProps> {
           <div className={classes.flex}>
             {/* Here we create navbar brand, based on route name */}
             <Button href="#" className={classes.title}>
-              {this.makeBrand()}
+              {title}
+              {''}
             </Button>
           </div>
           <Hidden smDown implementation="css">

@@ -31,12 +31,23 @@ const UserSchema = new Schema({
       description: String,
       technology: String,
       society: String,
-      Taille: String,
+      size: String,
+      Site: String,
       startDate: Date,
       EndDate: Date,
-      technology: String,
       status: String,
       Progress: String
+    }
+  ],
+  formationsfollowed: [
+    {
+      name: String,
+      Type: String,
+      Site: String,
+      EndDate: Date,
+      Rank: String,
+      startDate: Date,
+      Formateur: String
     }
   ],
   formations: [

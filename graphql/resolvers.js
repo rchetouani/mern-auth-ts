@@ -20,12 +20,11 @@ module.exports = {
     },
     addUser: async (parent, args, { User }) => {
       var user;
-      console.log(args.id);
       await User.findById(args.id, function(err, pro) {
         user = pro;
       });
-      console.log(user);
       const a = JSON.parse(JSON.stringify(args));
+      console.log(a);
       user.formations.push({
         name: a.formations[0].name,
         Type: a.formations[0].Type,
@@ -35,7 +34,61 @@ module.exports = {
         startDate: a.formations[0].startDate,
         EndDate: a.formations[0].EndDate
       });
-      console.log(user);
+      user.projects.push({
+        name: a.projects[0].name,
+        technology: a.projects[0].technology,
+        site: a.projects[0].site,
+        size: a.projects[0].size,
+        progress: a.projects[0].progress,
+        startDate: a.projects[0].startDate,
+        endDate: a.projects[0].endDate
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
+    },
+    addProject: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      console.log(user.projects);
+
+      user.projects.push({
+        name: a.projects[0].name,
+        description: a.projects[0].description,
+        technology: a.projects[0].technology,
+        society: a.projects[0].society,
+        status: a.projects[0].status,
+        size: a.projects[0].size,
+
+        Site: a.projects[0].Site,
+        Progress: a.projects[0].Progress,
+        startDate: a.projects[0].startDate,
+        EndDate: a.projects[0].EndDate
+      });
+      console.log(user.projects);
+
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
+    },
+    addFormation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.formationsfollowed.push({
+        name: a.formationsfollowed[0].name,
+        Type: a.formationsfollowed[0].Type,
+        Site: a.formationsfollowed[0].Site,
+        Rank: a.formationsfollowed[0].Rank,
+        Formateur: a.formationsfollowed[0].Formateur,
+        startDate: a.formationsfollowed[0].startDate,
+        EndDate: a.formationsfollowed[0].EndDate
+      });
       return User.replaceOne({ _id: args.id }, user, function(err) {
         if (err) return console.log(err);
       });
@@ -91,6 +144,29 @@ module.exports = {
           x.Formateur = a.formations[0].Formateur;
           x.startDate = a.formations[0].startDate;
           x.EndDate = a.formations[0].EndDate;
+        }
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return next(err);
+      });
+    },
+    updateProject: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+
+      user.projects.map(x => {
+        if (x.id == a.projects[0].id) {
+          x.name = a.projects[0].name;
+          x.technology = a.projects[0].technology;
+          x.site = a.projects[0].site;
+          x.progress = a.projects[0].progress;
+          x.size = a.projects[0].size;
+          x.startDate = a.projects[0].startDate;
+          x.endDate = a.projects[0].endDate;
+          x.progress = a.projects[0].progress;
         }
       });
       return User.replaceOne({ _id: args.id }, user, function(err) {
