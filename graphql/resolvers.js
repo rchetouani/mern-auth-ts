@@ -18,81 +18,6 @@ module.exports = {
       const user = await new User(args).save();
       return user;
     },
-    addUser: async (parent, args, { User }) => {
-      var user;
-      await User.findById(args.id, function(err, pro) {
-        user = pro;
-      });
-      const a = JSON.parse(JSON.stringify(args));
-      console.log(a);
-      user.formations.push({
-        name: a.formations[0].name,
-        Type: a.formations[0].Type,
-        Site: a.formations[0].Site,
-        Rank: a.formations[0].Rank,
-        Formateur: a.formations[0].Formateur,
-        startDate: a.formations[0].startDate,
-        EndDate: a.formations[0].EndDate
-      });
-      user.projects.push({
-        name: a.projects[0].name,
-        technology: a.projects[0].technology,
-        site: a.projects[0].site,
-        size: a.projects[0].size,
-        progress: a.projects[0].progress,
-        startDate: a.projects[0].startDate,
-        endDate: a.projects[0].endDate
-      });
-      return User.replaceOne({ _id: args.id }, user, function(err) {
-        if (err) return console.log(err);
-      });
-    },
-    addProject: async (parent, args, { User }) => {
-      var user;
-      await User.findById(args.id, function(err, pro) {
-        user = pro;
-      });
-      const a = JSON.parse(JSON.stringify(args));
-      console.log(user.projects);
-
-      user.projects.push({
-        name: a.projects[0].name,
-        description: a.projects[0].description,
-        technology: a.projects[0].technology,
-        society: a.projects[0].society,
-        status: a.projects[0].status,
-        size: a.projects[0].size,
-
-        Site: a.projects[0].Site,
-        Progress: a.projects[0].Progress,
-        startDate: a.projects[0].startDate,
-        EndDate: a.projects[0].EndDate
-      });
-      console.log(user.projects);
-
-      return User.replaceOne({ _id: args.id }, user, function(err) {
-        if (err) return console.log(err);
-      });
-    },
-    addFormation: async (parent, args, { User }) => {
-      var user;
-      await User.findById(args.id, function(err, pro) {
-        user = pro;
-      });
-      const a = JSON.parse(JSON.stringify(args));
-      user.formationsfollowed.push({
-        name: a.formationsfollowed[0].name,
-        Type: a.formationsfollowed[0].Type,
-        Site: a.formationsfollowed[0].Site,
-        Rank: a.formationsfollowed[0].Rank,
-        Formateur: a.formationsfollowed[0].Formateur,
-        startDate: a.formationsfollowed[0].startDate,
-        EndDate: a.formationsfollowed[0].EndDate
-      });
-      return User.replaceOne({ _id: args.id }, user, function(err) {
-        if (err) return console.log(err);
-      });
-    },
     updateUser: (root, params) => {
       return User.findOneAndUpdate(
         params.id,
@@ -110,7 +35,26 @@ module.exports = {
         }
       );
     },
-    deleteUser: async (parent, args, { User }) => {
+    addFormation: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.formations.push({
+        name: a.formations[0].name,
+        Type: a.formations[0].Type,
+        Site: a.formations[0].Site,
+        Rank: a.formations[0].Rank,
+        Formateur: a.formations[0].Formateur,
+        startDate: a.formations[0].startDate,
+        EndDate: a.formations[0].EndDate
+      });
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
+    },
+    deleteFormation: async (parent, args, { User }) => {
       var user;
       await User.findById(args.id, function(err, pro) {
         user = pro;
@@ -119,14 +63,11 @@ module.exports = {
       var lists = user.formations.filter(x => {
         return x.id != a.formations[0].id;
       });
-
-      return User.findOneAndUpdate(
-        { _id: args.id },
-        { formations: lists },
-        function(err) {
-          if (err) return next(err);
-        }
-      );
+      return User.findOneAndUpdate(args.id, { formations: lists }, function(
+        err
+      ) {
+        if (err) return next(err);
+      });
     },
     updateFormation: async (parent, args, { User }) => {
       var user;
@@ -146,7 +87,45 @@ module.exports = {
           x.EndDate = a.formations[0].EndDate;
         }
       });
-      return User.replaceOne({ _id: args.id }, user, function(err) {
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
+    },
+    addProject: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.projects.push({
+        name: a.projects[0].name,
+        description: a.projects[0].description,
+        technology: a.projects[0].technology,
+        society: a.projects[0].society,
+        size: a.projects[0].size,
+        Site: a.projects[0].Site,
+        EndDate: a.projects[0].EndDate,
+        startDate: a.projects[0].startDate,
+        status: a.projects[0].status,
+        Progress: a.projects[0].Progress
+
+      });
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
+    },
+    deleteProject: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      var lists = user.projects.filter(x => {
+        return x.id != a.projects[0].id;
+      });
+      return User.findOneAndUpdate(args.id, { projects: lists }, function(
+        err
+      ) {
         if (err) return next(err);
       });
     },
@@ -160,16 +139,19 @@ module.exports = {
       user.projects.map(x => {
         if (x.id == a.projects[0].id) {
           x.name = a.projects[0].name;
+          x.description = a.projects[0].description;
+          x.Site = a.projects[0].Site;
           x.technology = a.projects[0].technology;
-          x.site = a.projects[0].site;
-          x.progress = a.projects[0].progress;
+          x.society = a.projects[0].society;
           x.size = a.projects[0].size;
+          x.EndDate = a.projects[0].EndDate;
           x.startDate = a.projects[0].startDate;
-          x.endDate = a.projects[0].endDate;
-          x.progress = a.projects[0].progress;
+          x.status = a.projects[0].status;
+          x.Progress = a.projects[0].Progress;
+
         }
       });
-      return User.replaceOne({ _id: args.id }, user, function(err) {
+      return User.findOneAndUpdate(args.id, user, function(err) {
         if (err) return next(err);
       });
     }

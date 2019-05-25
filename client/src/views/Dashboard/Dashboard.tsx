@@ -167,7 +167,6 @@ class Dashboard extends React.Component<Props & any, any> {
                   {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-                    console.log('------>' + new Date());
                     var fo = data.allUsers;
                     var forma = fo.map(item => item.formations);
                     const er = [];
@@ -254,7 +253,6 @@ class Dashboard extends React.Component<Props & any, any> {
                         er.push(v);
                       })
                     );
-                    console.log(new Date());
                     return (
                       <>
                         <Paper>

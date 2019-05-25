@@ -10,8 +10,8 @@ import { Table } from '../../components';
 import Popup from 'reactjs-popup';
 
 const DELETE_FORMATION = gql`
-  mutation deleteUser($id: String!, $formations: [FormationInput]) {
-    deleteUser(id: $id, formations: $formations) {
+  mutation deleteFormation($id: String!, $formations: [FormationInput]) {
+    deleteFormation(id: $id, formations: $formations) {
       id
       name
     }
@@ -52,8 +52,8 @@ const GET_USERS = gql`
 `;
 
 const ADD_FORMATION = gql`
-  mutation addUser($id: String!, $formations: [FormationInput]) {
-    addUser(id: $id, formations: $formations) {
+  mutation addFormation($id: String!, $formations: [FormationInput]) {
+    addFormation(id: $id, formations: $formations) {
       formations {
         id
         name
@@ -118,7 +118,7 @@ class Formation extends Component<any, any> {
                               this.props.history.push(`/Formation`)
                             }
                           >
-                            {(addUser, { loading, error }) => (
+                            {(addFormation, { loading, error }) => (
                               <>
                                 <Button
                                   color="primary"
@@ -140,7 +140,7 @@ class Formation extends Component<any, any> {
                                         <form
                                           onSubmit={e => {
                                             e.preventDefault();
-                                            addUser({
+                                            addFormation({
                                               variables: {
                                                 id: data.User.id,
                                                 formations: {
@@ -424,7 +424,7 @@ class Formation extends Component<any, any> {
                                                     ref={node => {
                                                       Rank = node;
                                                     }}
-                                                    placeholder="Rank"
+                                                  placeholder="Rank"
                                                     defaultValue={rank.toString()}
                                                   />
                                                 </div>
@@ -504,12 +504,12 @@ class Formation extends Component<any, any> {
                                 this.props.history.push('/Formation')
                               }
                             >
-                              {(deleteUser, { loading, error }) => (
+                              {(deleteFormation, { loading, error }) => (
                                 <div>
                                   <form
                                     onSubmit={e => {
                                       e.preventDefault();
-                                      deleteUser({
+                                      deleteFormation({
                                         variables: {
                                           id: data.User.id,
                                           formations: {

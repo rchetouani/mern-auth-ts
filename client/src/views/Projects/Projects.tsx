@@ -1,18 +1,19 @@
 import { Grid, Paper } from '@material-ui/core';
-import { Button, ItemGrid, RegularCard } from '../../components';
+import { Button, ItemGrid, RegularCard,Table } from '../../components';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Query, Mutation } from 'react-apollo';
 import { gql } from 'apollo-boost';
 import Modal from 'react-awesome-modal';
-import { Table } from '../../components';
+import Popup from 'reactjs-popup';
 
 const GET_USERS = gql`
   query User($Id: String!) {
     User(id: $Id) {
       id
       projects {
+        id
         name
         description
         technology
@@ -31,23 +32,49 @@ const ADD_PROJECT = gql`
   mutation addProject($id: String!, $projects: [ProjectInput]) {
     addProject(id: $id, projects: $projects) {
       projects {
-        id: String
-        name: String
-        description: String
-        technology: String
-        society: String
-        size: String
-        Site: String
-        startDate: String
-        EndDate: String
-        status: String
-        Progress: String
+        id
+        name
+        description
+        technology
+        society
+        size
+        Site
+        startDate
+        EndDate
+        status
+        Progress
       }
     }
   }
 `;
-
-class Formation extends Component<any, any> {
+const DELETE_FORMATION = gql`
+  mutation deleteProject($id: String!, $projects: [ProjectInput]) {
+    deleteProject(id: $id, projects: $projects) {
+      id
+      name
+    }
+  }
+`;
+const Update_FORMATION = gql`
+  mutation updateProject($id: String!, $projects: [ProjectInput]) {
+    updateProject(id: $id, projects: $projects) {
+      projects {
+        id
+        name
+        description
+        technology
+        society
+        size
+        Site
+        startDate
+        EndDate
+        status
+        Progress
+      }
+    }
+  }
+`;
+class Project extends Component<any, any> {
   static propTypes: {
     auth: PropTypes.Validator<object>;
   };
@@ -71,14 +98,14 @@ class Formation extends Component<any, any> {
   }
 
   render() {
-    let name, description, Site, technology, startDate, society, EndDate;
+    let name, description, Site, technology, startDate, society, EndDate,size,status,Progress;
 
     return (
       <div>
         <Grid container>
           <ItemGrid xs={12} sm={12} md={12}>
             <RegularCard
-              cardTitle="Edit Formation"
+              cardTitle="Edit Project"
               content={
                 <div>
                   <Grid item xs={12} container>
@@ -89,13 +116,12 @@ class Formation extends Component<any, any> {
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;
-                        console.log(data.User.id);
                         return (
                           <Mutation
                             mutation={ADD_PROJECT}
                             key={data.User.id}
                             onCompleted={() =>
-                              this.props.history.push(`/Formation`)
+                              this.props.history.push(`/projects`)
                             }
                           >
                             {(addProject, { loading, error }) => (
@@ -105,16 +131,19 @@ class Formation extends Component<any, any> {
                                   round
                                   onClick={() => this.openModal()}
                                 >
-                                  Add Formation
+                                  Add Project
                                 </Button>
                                 <Modal
                                   visible={this.state.visible}
                                   width="400"
-                                  height="620"
+                                  height="700"
                                   effect="fadeInUp"
                                   onClickAway={() => this.closeModal()}
                                 >
-                                  <div className="container">
+                             
+                             
+                             
+                                 <div className="container">
                                     <div className="panel panel-default">
                                       <div className="panel-body">
                                         <form
@@ -123,23 +152,21 @@ class Formation extends Component<any, any> {
                                             addProject({
                                               variables: {
                                                 id: data.User.id,
-                                                formations: {
+                                                projects: {
                                                   name: name.value,
                                                   description:
                                                     description.value,
                                                   Site: Site.value,
+                                                  size:size.value,
+                                                  status:status.value,
                                                   technology: technology.value,
                                                   startDate: startDate.value,
                                                   society: society.value,
-                                                  EndDate: EndDate.value
+                                                  EndDate: EndDate.value,
+                                                  Progress:Progress.value
                                                 }
-                                              },
-                                              refetchQueries: [
-                                                { query: GET_USERS }
-                                              ]
-                                            }).then(
-                                              console.log(data.User.projects)
-                                            );
+                                              }
+                                            })
                                             name.value = '';
                                             description.value = '';
                                             Site.value = '';
@@ -147,6 +174,10 @@ class Formation extends Component<any, any> {
                                             startDate.value = '';
                                             society.value = '';
                                             EndDate.value = '';
+                                            status.value='';
+                                            size.value='';
+                                            Progress.value='';
+
                                           }}
                                         >
                                           <br />
@@ -231,6 +262,34 @@ class Formation extends Component<any, any> {
                                             />
                                           </div>
                                           <div className="form-group">
+                                            <label htmlFor="size">
+                                            size:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="size"
+                                              ref={node => {
+                                                size = node;
+                                              }}
+                                              placeholder="size"
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="status">
+                                            status:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="status"
+                                              ref={node => {
+                                                status = node;
+                                              }}
+                                              placeholder="status"
+                                            />
+                                          </div>
+                                          <div className="form-group">
                                             <label htmlFor="EndDate">
                                               EndDate:
                                             </label>
@@ -244,19 +303,34 @@ class Formation extends Component<any, any> {
                                               placeholder="EndDate"
                                             />
                                           </div>
+                                          <div className="form-group">
+                                            <label htmlFor="EndDate">
+                                              EndDate:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="Progress"
+                                              ref={node => {
+                                                Progress = node;
+                                              }}
+                                              placeholder="Progress"
+                                            />
+                                          </div>
                                           <Button
                                             color="primary"
                                             round
                                             type="submit"
                                             onClick={() => this.closeModal()}
+
                                           >
-                                            Add Formation
+                                            Add Project
                                           </Button>
                                           <Button
                                             color="primary"
                                             round
                                             onClick={() => this.closeModal()}
-                                          >
+                                        >
                                             Close{' '}
                                           </Button>
                                         </form>
@@ -283,6 +357,7 @@ class Formation extends Component<any, any> {
                       {({ loading, error, data }) => {
                         if (loading) return 'Loading...';
                         if (error) return `Error! ${error.message}`;
+
                         var fo = data.User.projects;
 
                         var array = fo.map(item =>
@@ -290,7 +365,305 @@ class Formation extends Component<any, any> {
                             return item[_];
                           })
                         );
+                        array.map(item => {
+                          const id = item[0];
+                          const nom = item[1];
+                          const descr = item[2];
+                          const site = item[3];
+                          const techno = item[4];
+                          const soci = item[5];
+                          const siz = item[6];
+                          const endDate = item[7];
+                          const startdate = item[8];
+                          const stat = item[9];
+                          const Prog = item[10];
 
+                          item.push(
+                            <Mutation
+                              mutation={Update_FORMATION}
+                              key={data.User.id}
+                              onCompleted={() =>
+                                this.props.history.push('/projects')
+                              }
+                            >
+                              {(updateProject, { loading, error }) => (
+                                <>
+                                  <Popup
+                                    open={false}
+                                    trigger={
+                                      <Button color="primary" round>
+                                        Edit{' '}
+                                      </Button>
+                                    }
+                                    position="top left"
+                                    modal
+                                    closeOnDocumentClick
+                                  >
+                                    {close => (
+                                      <div>
+                                        <div className="container">
+                                          <div className="panel panel-default">
+                                            <div className="panel-body">
+                                              <form
+                                                onSubmit={e => {
+                                                  e.preventDefault();
+                                                  updateProject({
+                                                    variables: {
+                                                      id: data.User.id,
+                                                      projects: {
+                                                        id:id,
+                                                        name: name.value,
+                                                        description:
+                                                          description.value,
+                                                        Site: Site.value,
+                                                        size:size.value,
+                                                        status:status.value,
+                                                        technology: technology.value,
+                                                        startDate: startDate.value,
+                                                        society: society.value,
+                                                        EndDate: EndDate.value,
+                                                        Progress:Progress.value
+                                                      }
+                                                    }
+                                                  }).then(() => {
+                                                    close();
+                                                  });
+                                                  name.value = '';
+                                            description.value = '';
+                                            Site.value = '';
+                                            technology.value = '';
+                                            startDate.value = '';
+                                            society.value = '';
+                                            EndDate.value = '';
+                                            status.value='';
+                                            size.value='';
+                                            Progress.value='';
+                                                }}
+                                              >
+                                                              <br />
+                                          <div className="form-group">
+                                            <label htmlFor="name">name:</label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="name"
+                                              ref={node => {
+                                                name = node;
+                                              }}
+                                              placeholder="name"
+                                              defaultValue={nom.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="description">
+                                              description:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="description"
+                                              ref={node => {
+                                                description = node;
+                                              }}
+                                              placeholder="description"
+                                              defaultValue={descr.toString()}
+
+                                            />
+                                          </div>
+
+                                          <div className="form-group">
+                                            <label htmlFor="Site">Site:</label>
+                                            <input
+                                              className="form-control"
+                                              name="Site"
+                                              ref={node => {
+                                                Site = node;
+                                              }}
+                                              placeholder="Site"
+                                              defaultValue={site.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="technology">
+                                              technology:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="technology"
+                                              ref={node => {
+                                                technology = node;
+                                              }}
+                                              placeholder="technology"
+                                              defaultValue={techno.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="startDate">
+                                              startDate:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="startDate"
+                                              ref={node => {
+                                                startDate = node;
+                                              }}
+                                              placeholder="startDate"
+                                              defaultValue={startdate.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="society">
+                                              society:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="society"
+                                              ref={node => {
+                                                society = node;
+                                              }}
+                                              placeholder="society"
+                                              defaultValue={soci.toString()}
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="size">
+                                            size:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="size"
+                                              ref={node => {
+                                                size = node;
+                                              }}
+                                              placeholder="size"
+                                              defaultValue={siz.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="status">
+                                            status:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="status"
+                                              ref={node => {
+                                                status = node;
+                                              }}
+                                              placeholder="status"
+                                              defaultValue={stat.toString()}
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="EndDate">
+                                              EndDate:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="EndDate"
+                                              ref={node => {
+                                                EndDate = node;
+                                              }}
+                                              placeholder="EndDate"
+                                              defaultValue={endDate.toString()}
+
+                                            />
+                                          </div>
+                                          <div className="form-group">
+                                            <label htmlFor="Progress">
+                                            Progress:
+                                            </label>
+                                            <input
+                                              type="text"
+                                              className="form-control"
+                                              name="Progress"
+                                              ref={node => {
+                                                Progress = node;
+                                              }}
+                                              placeholder="Progress"
+                                              defaultValue={Prog.toString()}
+
+                                            />
+                                          </div>
+                                                <Button
+                                                  color="primary"
+                                                  round
+                                                  type="submit"
+                                                >
+                                                  Edit{' '}
+                                                </Button>
+                                                <Button
+                                                  color="primary"
+                                                  round
+                                                  onClick={() => {
+                                                    close();
+                                                  }}
+                                                >
+                                                  Close{' '}
+                                                </Button>
+                                              </form>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </Popup>
+                                </>
+                              )}
+                            </Mutation>,
+                           <Mutation
+                           mutation={DELETE_FORMATION}
+                           key={data.User.id}
+                           onCompleted={() =>
+                             this.props.history.push('/projects')
+                           }
+                         >
+                           {(deleteProject, { loading, error }) => (
+                             <div>
+                               <form
+                                 onSubmit={e => {
+                                   e.preventDefault();
+                                   deleteProject({
+                                     variables: {
+                                       id: data.User.id,
+                                       projects: {
+                                         id: id.toString()
+                                       }
+                                     }
+                                   });
+                                 }}
+                               >
+                                 &nbsp;
+                                 <button
+                                   type="submit"
+                                   className="btn btn-danger"
+                                 >
+                                   Delete
+                                 </button>
+                               </form>
+                               {loading && <p>Loading...</p>}
+                               {error && <p>Error :( Please try again</p>}
+                             </div>
+                           )}
+                         </Mutation>
+                          );
+                        });
+                        array.map(i => {
+                          i.splice(0, 1);
+                        });
+                        array.map(i => {
+                          i.splice(5, 3);
+                        });
                         return (
                           <Paper>
                             <Table
@@ -320,11 +693,11 @@ class Formation extends Component<any, any> {
   }
 }
 
-Formation.propTypes = {
+  Project.propTypes = {
   auth: PropTypes.object.isRequired
 };
 const mapStateToProps = state => ({
   auth: state.auth
 });
 
-export default connect(mapStateToProps)(Formation);
+export default connect(mapStateToProps)(Project);
