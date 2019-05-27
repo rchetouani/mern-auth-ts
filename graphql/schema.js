@@ -11,6 +11,8 @@ type User {
   email :  String
   formations : [ Formation ]
   projects:[Project]
+  formationsfollowed:[ Formation ]
+
 }
 type Formation{
       id: String
@@ -91,7 +93,21 @@ type Mutation {
     
     deleteFormation(id:String!,formations:[FormationInput]):User!
 
-      addProject( 
+    addFormationfollowed( 
+      id:String!, 
+      name: String,
+      username : String,
+      status: String,
+      agency: String,
+      gender: String,
+      birthday: String,
+      email :  String,
+      formationsfollowed : [FormationInput]):User!
+
+      deleteFormationfollowed(id:String!,formationsfollowed:[FormationInput]):User!
+
+    
+    addProject( 
       id:String!, 
       name: String,
       username : String,

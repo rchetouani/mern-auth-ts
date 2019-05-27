@@ -108,7 +108,6 @@ module.exports = {
         startDate: a.projects[0].startDate,
         status: a.projects[0].status,
         Progress: a.projects[0].Progress
-
       });
       return User.findOneAndUpdate(args.id, user, function(err) {
         if (err) return next(err);
@@ -123,9 +122,7 @@ module.exports = {
       var lists = user.projects.filter(x => {
         return x.id != a.projects[0].id;
       });
-      return User.findOneAndUpdate(args.id, { projects: lists }, function(
-        err
-      ) {
+      return User.findOneAndUpdate(args.id, { projects: lists }, function(err) {
         if (err) return next(err);
       });
     },
@@ -148,12 +145,47 @@ module.exports = {
           x.startDate = a.projects[0].startDate;
           x.status = a.projects[0].status;
           x.Progress = a.projects[0].Progress;
-
         }
       });
       return User.findOneAndUpdate(args.id, user, function(err) {
         if (err) return next(err);
       });
+    },
+    addFormationfollowed: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.formationsfollowed.push({
+        name: a.formationsfollowed[0].name,
+        Type: a.formationsfollowed[0].Type,
+        Site: a.formationsfollowed[0].Site,
+        Rank: a.formationsfollowed[0].Rank,
+        Formateur: a.formationsfollowed[0].Formateur,
+        startDate: a.formationsfollowed[0].startDate,
+        EndDate: a.formationsfollowed[0].EndDate
+      });
+      return User.findOneAndUpdate(args.id, user, function(err) {
+        if (err) return next(err);
+      });
+    },
+    deleteFormationfollowed: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      var lists = user.formationsfollowed.filter(x => {
+        return x.id != a.formationsfollowed[0].id;
+      });
+      return User.findOneAndUpdate(
+        args.id,
+        { formationsfollowed: lists },
+        function(err) {
+          if (err) return next(err);
+        }
+      );
     }
   }
 };

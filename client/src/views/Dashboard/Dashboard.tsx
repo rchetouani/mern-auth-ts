@@ -21,8 +21,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Popup from 'reactjs-popup';
 const ADD_FORMATION = gql`
-  mutation addFormation($id: String!, $formationsfollowed: [FormationInput]) {
-    addFormation(id: $id, formationsfollowed: $formationsfollowed) {
+  mutation addFormationfollowed(
+    $id: String!
+    $formationsfollowed: [FormationInput]
+  ) {
+    addFormationfollowed(id: $id, formationsfollowed: $formationsfollowed) {
       formationsfollowed {
         id
         name
@@ -44,6 +47,13 @@ const GET_USERS = gql`
       username
       email
       formations {
+        id
+        name
+        Type
+        Site
+        Formateur
+      }
+      formationsfollowed {
         id
         name
         Type
@@ -174,7 +184,7 @@ class Dashboard extends React.Component<Props & any, any> {
                       x.map(y => {
                         const btn = (
                           <Mutation mutation={ADD_FORMATION} key={y.id}>
-                            {(addFormation, { loading, error }) => (
+                            {(addFormationfollowed, { loading, error }) => (
                               <>
                                 <Popup
                                   open={false}
@@ -194,7 +204,7 @@ class Dashboard extends React.Component<Props & any, any> {
                                           <form
                                             onSubmit={e => {
                                               e.preventDefault();
-                                              addFormation({
+                                              addFormationfollowed({
                                                 variables: {
                                                   id: this.props.auth.user.id,
                                                   formationsfollowed: {
@@ -204,10 +214,7 @@ class Dashboard extends React.Component<Props & any, any> {
                                                     Site: y.Site,
                                                     Formateur: y.Formateur
                                                   }
-                                                },
-                                                refetchQueries: [
-                                                  { query: GET_USERS }
-                                                ]
+                                                }
                                               }).then(() => {
                                                 close();
                                                 this.showNotification('tc');
@@ -216,10 +223,10 @@ class Dashboard extends React.Component<Props & any, any> {
                                           >
                                             <br />
                                             <div className="form-group">
-                                              <h3>
+                                              <h4>
                                                 Are you sure you want to follow
                                                 this formation ??
-                                              </h3>
+                                              </h4>
                                             </div>
 
                                             <Button
@@ -251,6 +258,7 @@ class Dashboard extends React.Component<Props & any, any> {
                         );
                         const v = { ...y, mutation: btn };
                         er.push(v);
+                        console.log(er);
                       })
                     );
                     return (
@@ -295,13 +303,6 @@ class Dashboard extends React.Component<Props & any, any> {
   }
 
   private showNotification(place: Positions) {
-    /*
-     * https://github.com/Microsoft/TypeScript/issues/13948#issuecomment-394527009
-     *
-     * Seems to be some issue here when using [dynamic] properties in setState
-     * Issue is milestone'd for TS 3.0 release
-     */
-
     // @ts-ignore
     this.setState({ [place]: true });
 
