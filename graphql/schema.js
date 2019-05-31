@@ -12,7 +12,8 @@ type User {
   formations : [ Formation ]
   projects:[Project]
   formationsfollowed:[ Formation ]
-
+  certifications:[Certification]
+  calendar:[Calendar]
 }
 type Formation{
       id: String
@@ -60,6 +61,38 @@ input  ProjectInput{
   EndDate: String
   status: String
   Progress: String
+}
+type Certification{
+  id: String
+  code: String,
+      name: String,
+
+      EndDate: String,
+      startDate: String,
+      organisme: String
+}
+input  CertificationInput{
+id: String
+code: String,
+name: String,
+
+EndDate: String,
+startDate: String,
+organisme: String
+}
+type Calendar{
+  id: String
+  title: String,
+  allDay: String,
+  start: String,
+  end: String
+}
+input  CalendarInput{
+id: String
+title: String,
+      allDay: String,
+      start: String,
+      end: String
 }
 type Query {
   allUsers: [User!]!
@@ -123,6 +156,34 @@ type Mutation {
     
       deleteProject(id:String!,projects:[ProjectInput]):User!
   
-
+  
+      addCertification( 
+        id:String!, 
+        name: String,
+        username : String,
+        status: String,
+        agency: String,
+        gender: String,
+        birthday: String,
+        email :  String,
+        certifications : [CertificationInput]):User!
+        
+        updateCertification(id:String!,certifications:[CertificationInput]):User!
+  
+      
+        deleteCertification(id:String!,certifications:[CertificationInput]):User!
+    
+        
+        addCalendar( 
+          id:String!, 
+          name: String,
+          username : String,
+          status: String,
+          agency: String,
+          gender: String,
+          birthday: String,
+          email :  String,
+          calendar : [CalendarInput]):User!
+        
   }
 `;

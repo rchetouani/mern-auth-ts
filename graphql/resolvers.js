@@ -31,7 +31,7 @@ module.exports = {
           email: params.email
         },
         function(err) {
-          if (err) return next(err);
+          if (err) return console.log(err);
         }
       );
     },
@@ -50,8 +50,8 @@ module.exports = {
         startDate: a.formations[0].startDate,
         EndDate: a.formations[0].EndDate
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     deleteFormation: async (parent, args, { User }) => {
@@ -63,10 +63,10 @@ module.exports = {
       var lists = user.formations.filter(x => {
         return x.id != a.formations[0].id;
       });
-      return User.findOneAndUpdate(args.id, { formations: lists }, function(
+      return User.replaceOne({ _id: args.id }, { formations: lists }, function(
         err
       ) {
-        if (err) return next(err);
+        if (err) return console.log(err);
       });
     },
     updateFormation: async (parent, args, { User }) => {
@@ -87,8 +87,8 @@ module.exports = {
           x.EndDate = a.formations[0].EndDate;
         }
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     addProject: async (parent, args, { User }) => {
@@ -109,8 +109,8 @@ module.exports = {
         status: a.projects[0].status,
         Progress: a.projects[0].Progress
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     deleteProject: async (parent, args, { User }) => {
@@ -122,8 +122,10 @@ module.exports = {
       var lists = user.projects.filter(x => {
         return x.id != a.projects[0].id;
       });
-      return User.findOneAndUpdate(args.id, { projects: lists }, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, { projects: lists }, function(
+        err
+      ) {
+        if (err) return console.log(err);
       });
     },
     updateProject: async (parent, args, { User }) => {
@@ -147,8 +149,8 @@ module.exports = {
           x.Progress = a.projects[0].Progress;
         }
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     addFormationfollowed: async (parent, args, { User }) => {
@@ -166,8 +168,8 @@ module.exports = {
         startDate: a.formationsfollowed[0].startDate,
         EndDate: a.formationsfollowed[0].EndDate
       });
-      return User.findOneAndUpdate(args.id, user, function(err) {
-        if (err) return next(err);
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
       });
     },
     deleteFormationfollowed: async (parent, args, { User }) => {
@@ -179,13 +181,84 @@ module.exports = {
       var lists = user.formationsfollowed.filter(x => {
         return x.id != a.formationsfollowed[0].id;
       });
-      return User.findOneAndUpdate(
-        args.id,
+      return User.replaceOne(
+        { _id: args.id },
         { formationsfollowed: lists },
         function(err) {
-          if (err) return next(err);
+          if (err) return console.log(err);
         }
       );
+    },
+    addCertification: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.certifications.push({
+        code: a.certifications[0].code,
+        name: a.certifications[0].name,
+        EndDate: a.certifications[0].EndDate,
+        startDate: a.certifications[0].startDate,
+        organisme: a.certifications[0].organisme
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
+    },
+    deleteCertification: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      console.log(a.certifications[0].id);
+
+      var lists = user.certifications.filter(x => {
+        return x.id != a.certifications[0].id;
+      });
+      return User.replaceOne(
+        { _id: args.id },
+        { certifications: lists },
+        function(err) {
+          if (err) return console.log(err);
+        }
+      );
+    },
+    updateCertification: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.certifications.map(x => {
+        if (x.id == a.certifications[0].id) {
+          x.code = a.certifications[0].code;
+          x.name = a.certifications[0].name;
+          x.organisme = a.certifications[0].organisme;
+          x.EndDate = a.certifications[0].EndDate;
+          x.startDate = a.certifications[0].startDate;
+        }
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
+    },
+    addCalendar: async (parent, args, { User }) => {
+      var user;
+      await User.findById(args.id, function(err, pro) {
+        user = pro;
+      });
+      const a = JSON.parse(JSON.stringify(args));
+      user.calendar.push({
+        title: a.calendar[0].title,
+        allDay: a.calendar[0].allDay,
+        start: a.calendar[0].start,
+        end: a.calendar[0].end
+      });
+      return User.replaceOne({ _id: args.id }, user, function(err) {
+        if (err) return console.log(err);
+      });
     }
   }
 };

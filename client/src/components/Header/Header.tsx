@@ -49,7 +49,7 @@ class Header extends React.Component<Props & RouteProps> {
         <Toolbar className={classes.container}>
           <div className={classes.flex}>
             {/* Here we create navbar brand, based on route name */}
-            <Button href="#" className={classes.title}>
+            <Button className={classes.title}>
               {title}
               {''}
             </Button>

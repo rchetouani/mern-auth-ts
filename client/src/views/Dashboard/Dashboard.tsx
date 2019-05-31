@@ -87,7 +87,6 @@ class Dashboard extends React.Component<Props & any, any> {
   }
 
   render() {
-    //  const { classes } = this.props;
     return (
       <div>
         <Grid container>
@@ -123,7 +122,7 @@ class Dashboard extends React.Component<Props & any, any> {
               statText="Tracked from Github"
             />
           </ItemGrid>
-          <ItemGrid sm={6} md={3}>
+          <ItemGrid xs={12} sm={6} md={3}>
             <StatsCard
               icon={Accessibility}
               iconColor="blue"
@@ -140,24 +139,44 @@ class Dashboard extends React.Component<Props & any, any> {
             <RegularCard
               headerColor="orange"
               cardTitle="User List "
-              cardSubtitle="New employees on 15th September, 2016"
+              cardSubtitle="List of Users on Skill Center"
               content={
                 <Query query={GET_USERS}>
                   {({ loading, error, data }) => {
                     if (loading) return 'Loading...';
                     if (error) return `Error! ${error.message}`;
-                    var fo = data.allUsers;
+                    var users = data.allUsers;
+
                     return (
                       <Paper>
                         <Table
                           tableHeaderColor="warning"
-                          tableHead={['ID', 'Name', 'Username', 'Email']}
-                          tableData={fo.map(item =>
+                          headRows={[
+                            {
+                              id: '0',
+                              numeric: false,
+                              disablePadding: true,
+                              label: 'Name'
+                            },
+                            {
+                              id: '1',
+                              numeric: false,
+                              disablePadding: true,
+                              label: 'username'
+                            },
+                            {
+                              id: '2',
+                              numeric: false,
+                              disablePadding: true,
+                              label: 'Email'
+                            }
+                          ]}
+                          tableData={users.map(item =>
                             Object.keys(item)
                               .map(function(_) {
                                 return item[_];
                               })
-                              .slice(0, 4)
+                              .splice(1, 3)
                           )}
                         />
                       </Paper>
@@ -170,7 +189,7 @@ class Dashboard extends React.Component<Props & any, any> {
           <ItemGrid xs={12} sm={6} md={6}>
             <RegularCard
               headerColor="purple"
-              cardSubtitle="New employees on 15th September, 2016"
+              cardSubtitle=" List of Formation to follow"
               cardTitle="Formation List "
               content={
                 <Query query={GET_USERS}>
@@ -179,7 +198,8 @@ class Dashboard extends React.Component<Props & any, any> {
                     if (error) return `Error! ${error.message}`;
                     var fo = data.allUsers;
                     var forma = fo.map(item => item.formations);
-                    const er = [];
+                    var er = [];
+
                     forma.map(x =>
                       x.map(y => {
                         const btn = (
@@ -258,20 +278,45 @@ class Dashboard extends React.Component<Props & any, any> {
                         );
                         const v = { ...y, mutation: btn };
                         er.push(v);
-                        console.log(er);
                       })
                     );
+                    er.map(i => {
+                      delete i.id;
+                      delete i.__typename;
+                    });
+                    console.log(er);
                     return (
                       <>
                         <Paper>
                           <Table
                             tableHeaderColor="warning"
-                            tableHead={['Name', 'Type', 'Site', 'Rank']}
-                            tableData={er.map(item =>
-                              Object.keys(item).map(function(_) {
-                                return item[_];
-                              })
-                            )}
+                            tableData={er}
+                            headRows={[
+                              {
+                                id: 'name',
+                                numeric: false,
+                                disablePadding: true,
+                                label: 'Name'
+                              },
+                              {
+                                id: 'Site',
+                                numeric: false,
+                                disablePadding: true,
+                                label: 'Site'
+                              },
+                              {
+                                id: 'Type',
+                                numeric: false,
+                                disablePadding: true,
+                                label: 'Type'
+                              },
+                              {
+                                id: 'Formateur',
+                                numeric: false,
+                                disablePadding: true,
+                                label: 'Formateur'
+                              }
+                            ]}
                           />
                         </Paper>
                         <Grid container justify="center">
@@ -289,7 +334,6 @@ class Dashboard extends React.Component<Props & any, any> {
                             close
                           />
                         </Grid>
-                        ;
                       </>
                     );
                   }}

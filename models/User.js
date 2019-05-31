@@ -61,6 +61,23 @@ const UserSchema = new Schema({
       Formateur: String
     }
   ],
+  certifications: [
+    {
+      code: String,
+      name: String,
+      EndDate: Date,
+      startDate: Date,
+      organisme: String
+    }
+  ],
+  objectifs: [
+    {
+      name: String,
+      status: String,
+      EndDate: Date,
+      Progress: String
+    }
+  ],
   role: [
     {
       type: String,
@@ -71,6 +88,14 @@ const UserSchema = new Schema({
     {
       name: String,
       value: Number
+    }
+  ],
+  calendar: [
+    {
+      title: String,
+      allDay: String,
+      start: Date,
+      end: Date
     }
   ]
 });

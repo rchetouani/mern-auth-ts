@@ -541,42 +541,11 @@ class Formation extends Component<any, any> {
                         array.map(i => {
                           i.splice(5, 3);
                         });
-                        console.log(array);
                         return (
                           <Paper>
                             <Table
                               tableHeaderColor="warning"
-                              tableData={array.map(item =>
-                                Object.keys(item).map(function(_) {
-                                  return item[_];
-                                })
-                              )}
-                              headRows={[
-                                {
-                                  id: '0',
-                                  numeric: false,
-                                  disablePadding: true,
-                                  label: 'Name'
-                                },
-                                {
-                                  id: '1',
-                                  numeric: false,
-                                  disablePadding: true,
-                                  label: 'Site'
-                                },
-                                {
-                                  id: '2',
-                                  numeric: false,
-                                  disablePadding: true,
-                                  label: 'Type'
-                                },
-                                {
-                                  id: '3',
-                                  numeric: false,
-                                  disablePadding: true,
-                                  label: 'Formateur'
-                                }
-                              ]}
+                              tableData={array}
                             />
                           </Paper>
                         );
