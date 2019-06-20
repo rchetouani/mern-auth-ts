@@ -5,7 +5,7 @@ import { Route, Router, Switch } from 'react-router-dom';
 import indexRoutes from '../../routes';
 import { Component } from 'react';
 import { ApolloProvider } from 'react-apollo';
-const client = new ApolloClient({
+const client = new ApolloClient<any>({
   uri: 'http://localhost:5000/graphql'
 });
 import ApolloClient from 'apollo-boost';

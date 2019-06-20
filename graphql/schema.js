@@ -1,4 +1,5 @@
 module.exports = `
+scalar Date
 type User {
   id: String
   name: String
@@ -7,13 +8,29 @@ type User {
   status: String
   agency: String
   gender: String
-  birthday: String
+  birthday: Date
   email :  String
   formations : [ Formation ]
   projects:[Project]
   formationsfollowed:[ Formation ]
   certifications:[Certification]
   calendar:[Calendar]
+  objectifs:[Objectif]
+}
+type Objectif
+{
+  id:String
+  name: String
+      status: String
+      EndDate: Date
+      Progress: String
+}
+input ObjectifInput{
+  id:String
+  name: String
+  status: String
+  EndDate: Date
+  Progress: String
 }
 type Formation{
       id: String
@@ -97,17 +114,20 @@ title: String,
 type Query {
   allUsers: [User!]!
   User(id :String):User
+  UserByRole(role:String):[User!]!
+  UserByPole(pole:String):[User!]!
+
 }
 type Mutation {
   createUser(name: String!): User!
   updateUser(id:String!,
-    name: String!,
-    username : String!,
-    status: String!,
-    agency: String!,
-    gender: String!,
-    birthday: String!,
-    email :  String!,
+    name: String,
+    username : String,
+    status: String,
+    agency: String,
+    gender: String,
+    birthday: Date,
+    email :  String,
     ):User!
 
   addFormation( 
@@ -117,7 +137,7 @@ type Mutation {
     status: String,
     agency: String,
     gender: String,
-    birthday: String,
+    birthday: Date,
     email :  String,
     formations : [FormationInput]):User!
     
@@ -133,7 +153,7 @@ type Mutation {
       status: String,
       agency: String,
       gender: String,
-      birthday: String,
+      birthday: Date,
       email :  String,
       formationsfollowed : [FormationInput]):User!
 
@@ -147,7 +167,7 @@ type Mutation {
       status: String,
       agency: String,
       gender: String,
-      birthday: String,
+      birthday: Date,
       email :  String,
       projects : [ProjectInput]):User!
       
@@ -164,7 +184,7 @@ type Mutation {
         status: String,
         agency: String,
         gender: String,
-        birthday: String,
+        birthday: Date,
         email :  String,
         certifications : [CertificationInput]):User!
         
@@ -174,6 +194,23 @@ type Mutation {
         deleteCertification(id:String!,certifications:[CertificationInput]):User!
     
         
+        addObjectif( 
+          id:String!, 
+          name: String,
+          username : String,
+          status: String,
+          agency: String,
+          gender: String,
+          birthday: Date,
+          email :  String,
+          objectifs : [ObjectifInput]):User!
+          
+          updateObjectif(id:String!,objectifs:[ObjectifInput]):User!
+    
+        
+          deleteObjectif(id:String!,objectifs:[ObjectifInput]):User!
+      
+          
         addCalendar( 
           id:String!, 
           name: String,
@@ -181,9 +218,15 @@ type Mutation {
           status: String,
           agency: String,
           gender: String,
-          birthday: String,
+          birthday: Date,
           email :  String,
           calendar : [CalendarInput]):User!
+          updateCalendar(id:String!,calendar:[CalendarInput]):User!
+    
         
+          deleteCalendar(id:String!,calendar:[CalendarInput]):User!
+         
   }
+  
+
 `;

@@ -1,14 +1,13 @@
 import { Dashboard, Person } from '@material-ui/icons';
 import DashboardPage from '../views/Dashboard/Dashboard';
 
-import UserProfile from '../views/UserProfile/UserProfile';
 import Formation from '../views/Formation/Formation';
 import Project from '../views/Projects/Projects';
 import Skill from '../views/Skill/Skill';
 import Certifications from '../views/Certifications/Certifications';
 import Objectifs from '../views/Objectifs/Objectifs';
-import Calendar from '../views/Calendar/Calendar';
-
+import Calendar from '../views/Calendar/Data';
+import Profile from '../views/UserProfile/UserProfile';
 export type Route = typeof dashboardRoutes[0];
 const dashboardRoutes = [
   {
@@ -17,13 +16,6 @@ const dashboardRoutes = [
     navbarName: 'Dashboard',
     icon: Dashboard,
     component: DashboardPage
-  },
-  {
-    path: '/user',
-    sidebarName: 'User Profile',
-    navbarName: 'Profile',
-    icon: Person,
-    component: UserProfile
   },
   {
     path: '/formation',
@@ -66,6 +58,11 @@ const dashboardRoutes = [
     navbarName: 'Calendar',
     icon: Person,
     component: Calendar
+  },
+  {
+    path: '/user',
+
+    component: Profile
   },
   {
     path: '/',

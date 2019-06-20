@@ -17,6 +17,8 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  role: { type: String },
+  pole: { type: String },
   status: String,
   address: String,
   agency: String,
@@ -78,12 +80,7 @@ const UserSchema = new Schema({
       Progress: String
     }
   ],
-  role: [
-    {
-      type: String,
-      experience: String
-    }
-  ],
+
   skills: [
     {
       name: String,

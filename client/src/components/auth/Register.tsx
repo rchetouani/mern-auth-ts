@@ -18,6 +18,8 @@ class Register extends Component<any, any> {
       email: '',
       password: '',
       password2: '',
+      role: '',
+      pole: '',
       errors: {}
     };
   }
@@ -48,9 +50,10 @@ class Register extends Component<any, any> {
       name: this.state.name,
       email: this.state.email,
       password: this.state.password,
-      password2: this.state.password2
+      password2: this.state.password2,
+      role: this.state.role,
+      pole: this.state.pole
     };
-
     this.props.registerUser(newUser, this.props.history);
   };
 
@@ -100,6 +103,32 @@ class Register extends Component<any, any> {
                 <label htmlFor="email">Email</label>
                 <span className="red-text">{errors.email}</span>
               </div>
+              <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.role}
+                  id="role"
+                  type="text"
+                  className={classnames('', {
+                    invalid: errors.role
+                  })}
+                />
+                <label htmlFor="role">Role</label>
+                <span className="red-text">{errors.role}</span>
+              </div>{' '}
+              <div className="input-field col s12">
+                <input
+                  onChange={this.onChange}
+                  value={this.state.pole}
+                  id="pole"
+                  type="text"
+                  className={classnames('', {
+                    invalid: errors.pole
+                  })}
+                />
+                <label htmlFor="pole">Pole</label>
+                <span className="red-text">{errors.pole}</span>
+              </div>{' '}
               <div className="input-field col s12">
                 <input
                   onChange={this.onChange}

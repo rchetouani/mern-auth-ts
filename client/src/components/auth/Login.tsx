@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
-import { loginUser } from "../../actions/authActions";
-import classnames from "classnames";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { loginUser } from '../../actions/authActions';
+import classnames from 'classnames';
 
 class Login extends Component<any, any> {
   static propTypes: {
@@ -14,8 +14,8 @@ class Login extends Component<any, any> {
   constructor(props: any) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       errors: {}
     };
   }
@@ -23,13 +23,13 @@ class Login extends Component<any, any> {
   componentDidMount() {
     // If logged in and user navigates to Login page, should redirect them to dashboard
     if (this.props.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push('/dashboard');
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.auth.isAuthenticated) {
-      this.props.history.push("/dashboard");
+      this.props.history.push('/dashboard');
     }
 
     if (nextProps.errors) {
@@ -59,13 +59,13 @@ class Login extends Component<any, any> {
 
     return (
       <div className="container">
-        <div style={{ marginTop: "4rem" }} className="row">
+        <div style={{ marginTop: '4rem' }} className="row">
           <div className="col s8 offset-s2">
             <Link to="/" className="btn-flat waves-effect">
               <i className="material-icons left">keyboard_backspace</i> Back to
               home
             </Link>
-            <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+            <div className="col s12" style={{ paddingLeft: '11.250px' }}>
               <h4>
                 <b>Login</b> below
               </h4>
@@ -80,7 +80,7 @@ class Login extends Component<any, any> {
                   value={this.state.email}
                   id="email"
                   type="email"
-                  className={classnames("", {
+                  className={classnames('', {
                     invalid: errors.email || errors.emailnotfound
                   })}
                 />
@@ -96,7 +96,7 @@ class Login extends Component<any, any> {
                   value={this.state.password}
                   id="password"
                   type="password"
-                  className={classnames("", {
+                  className={classnames('', {
                     invalid: errors.password || errors.passwordincorrect
                   })}
                 />
@@ -106,13 +106,13 @@ class Login extends Component<any, any> {
                   {errors.passwordincorrect}
                 </span>
               </div>
-              <div className="col s12" style={{ paddingLeft: "11.250px" }}>
+              <div className="col s12" style={{ paddingLeft: '11.250px' }}>
                 <button
                   style={{
-                    width: "150px",
-                    borderRadius: "3px",
-                    letterSpacing: "1.5px",
-                    marginTop: "1rem"
+                    width: '150px',
+                    borderRadius: '3px',
+                    letterSpacing: '1.5px',
+                    marginTop: '1rem'
                   }}
                   type="submit"
                   className="btn btn-large waves-effect waves-light hoverable blue accent-3"

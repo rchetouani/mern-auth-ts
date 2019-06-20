@@ -67,12 +67,11 @@ class App extends React.Component<Props & RouteProps & any, State> {
 
   render() {
     const { classes, ...rest } = this.props;
-
     return (
       <div className={classes.wrapper}>
         <Sidebar
           routes={dashboardRoutes}
-          logoText={'SQLI Skills'}
+          logoText={'ISC-Carrers'}
           logo={logo}
           image={image}
           handleDrawerToggle={this.handleDrawerToggle}
